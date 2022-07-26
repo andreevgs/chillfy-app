@@ -111,7 +111,6 @@ export default {
           this.$router.push("/profile");
         },
         (error) => {
-          this.loading = false;
           if(error.response.status === 403 && error.response.data.isConfirmed === false){
             AuthService.code(user).then(
                 () => {
@@ -119,6 +118,7 @@ export default {
                   this.userPassword = user.password;
                   this.confirmationRequired = true;
                   this.message = '';
+                  this.loading = false;
                 },
                 () => {
                   this.message =
@@ -127,6 +127,7 @@ export default {
                           error.response.data.message) ||
                       error.message ||
                       error.toString();
+                  this.loading = false;
                 }
             )
           }

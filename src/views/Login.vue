@@ -1,12 +1,6 @@
 <template>
   <div class="col-md-12">
     <div class="card card-container">
-      <img
-        id="profile-img"
-        src="//ssl.gstatic.com/accounts/ui/avatar_2x.png"
-        class="profile-img-card"
-        v-if="!confirmationRequired"
-      />
       <Form v-if="confirmationRequired" @submit="handleConfirmation" :validation-schema="confirmationSchema">
         <p>Confirmation code was sent to your Email.</p>
         <p>Check your Email and input code to verify yourself.</p>
@@ -54,6 +48,7 @@
       >
         {{ message }}
       </div>
+      <button class="btn btn-primary btn-block" v-if="!confirmationRequired" v-on:click="this.$router.push('/restore')">I forgot my password</button>
     </div>
   </div>
 </template>
@@ -138,6 +133,7 @@ export default {
                     error.response.data.message) ||
                 error.message ||
                 error.toString();
+            this.loading = false;
           }
         }
       );

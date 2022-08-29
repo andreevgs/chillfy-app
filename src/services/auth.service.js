@@ -66,6 +66,25 @@ class AuthService {
       }
     });
   }
+
+  codeForRestore(email) {
+    return api.post('/auth/restore/code', {
+      user: {
+        email
+      }
+    });
+  }
+
+  changePassword(user) {
+    return api.post('/auth/restore', {
+      user: {
+        confirmationCode: parseInt(user.code),
+        email: user.email,
+        newPassword: user.newPassword
+      }
+    });
+  }
+
   refreshTokens() {
     return api.get('/tokens', { headers: authHeader() });
   }

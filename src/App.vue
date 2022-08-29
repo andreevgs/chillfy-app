@@ -42,6 +42,11 @@ import {RouterLink, RouterView} from 'vue-router'
           </RouterLink>
         </li>
         <li class="nav-item">
+          <RouterLink to="/events" class="nav-link">
+            Events
+          </RouterLink>
+        </li>
+        <li class="nav-item">
           <a style="cursor: pointer" class="nav-link" @click.prevent="logOut">
             LogOut
           </a>

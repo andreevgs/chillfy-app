@@ -1,6 +1,9 @@
 import api from "./api";
 
 class AccountService {
+    getContacts(){
+        return api.get('/account/contacts');
+    }
     createContactRequest(secondUserId){
         return api.post('/account/contacts/requests', {request: {secondUserId}});
     }

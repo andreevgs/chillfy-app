@@ -7,7 +7,7 @@ class UsersService {
   }
 
   getAll() {
-    return api.get('/users');
+    return api.get('/users', {params: {limit: 7}});
   }
 }
 

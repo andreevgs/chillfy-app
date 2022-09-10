@@ -206,6 +206,7 @@ export default {
       $event.statusId = +$event.canNotStatusId;
       EventsService.updateInvitationEvent(invitation.event.id, invitation.id, $event).then(
           (response) => {
+            console.log(invitation.status.id, response.data.invitation.status.id);
             invitation.status.id = response.data.invitation.status.id;
             // socket.emit("change card", {
             //   content: response.data.invitation.status,

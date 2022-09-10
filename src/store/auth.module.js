@@ -1,5 +1,5 @@
 import AuthService from '../services/auth.service';
-
+console.log(localStorage.getItem('accessToken'));
 const accessToken = JSON.parse(localStorage.getItem('accessToken'));
 const initialState = accessToken
   ? { status: { loggedIn: true } }

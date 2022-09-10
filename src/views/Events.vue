@@ -62,9 +62,53 @@
         >
           <p>{{ invitation.event.name }}</p>
           <p>{{ getMoment(invitation.event.date) }}</p>
-          <button class="btn btn-primary btn-block">Can not</button>
-          <button class="btn btn-primary btn-block">Most Likely</button>
-          <button class="btn btn-primary btn-block">Definitely Attend</button>
+          <div v-if="invitation.status">
+            <p v-if="invitation.status?.id === 2" style="color: red">You refused</p>
+            <p v-if="invitation.status?.id === 3" style="color: orange">You are not sure</p>
+            <p v-if="invitation.status?.id === 4" style="color: limegreen">You agreed</p>
+          </div>
+          <Form @submit="handleUpdatingInvitationCanNot($event, invitation)">
+            <div class="form-group">
+              <Field name="canNotStatusId" style="visibility: hidden" value="2" />
+            </div>
+            <div class="form-group">
+              <button class="btn btn-danger btn-block" :disabled="invitation.canNotButtonLoading || invitation.status?.id === 2">
+            <span
+                v-show="invitation.canNotButtonLoading"
+                class="spinner-border spinner-border-sm"
+            ></span>
+                <span>Can not</span>
+              </button>
+            </div>
+          </Form>
+          <Form @submit="handleUpdatingInvitationMostLikely($event, invitation)">
+            <div class="form-group">
+              <Field name="mostLikelyStatusId" style="visibility: hidden" value="3" />
+            </div>
+            <div class="form-group">
+              <button class="btn btn-warning btn-block" :disabled="invitation.mostLikelyButtonLoading || invitation.status?.id === 3">
+            <span
+                v-show="invitation.mostLikelyButtonLoading"
+                class="spinner-border spinner-border-sm"
+            ></span>
+                <span>Most Likely</span>
+              </button>
+            </div>
+          </Form>
+          <Form @submit="handleUpdatingInvitationDefinitelyAttend($event, invitation)">
+            <div class="form-group">
+              <Field name="definitelyAttendStatusId" style="visibility: hidden" value="4" />
+            </div>
+            <div class="form-group">
+              <button class="btn btn-success btn-block" :disabled="invitation.definitelyAttendButtonLoading || invitation.status?.id === 4">
+            <span
+                v-show="invitation.definitelyAttendButtonLoading"
+                class="spinner-border spinner-border-sm"
+            ></span>
+                <span>Definitely Attend</span>
+              </button>
+            </div>
+          </Form>
         </li>
       </ul>
     </div>
@@ -76,6 +120,8 @@ import moment from 'moment';
 import * as yup from "yup";
 import {ErrorMessage, Field, Form} from "vee-validate";
 import EventsService from "../services/events.service";
+import socket from "../services/socket";
+
 export default {
   name: 'Events',
   components: {
@@ -99,6 +145,7 @@ export default {
     };
   },
   mounted() {
+    socket.connect();
     EventsService.getEvents().then(
         (response) => {
           this.events = response.data.events;
@@ -137,6 +184,7 @@ export default {
       EventsService.createEvent(event).then(
           response => {
             this.events.push(response.data.event);
+            this.isCreationOfEventActive = false;
             this.loading = false;
           },
           error => {
@@ -150,6 +198,72 @@ export default {
           }
       )
     },
+    handleUpdatingInvitationCanNot($event, invitation) {
+      invitation.canNotButtonLoading = true;
+      if(invitation.status === null) invitation.status = {};
+
+      console.log($event, invitation);
+      $event.statusId = +$event.canNotStatusId;
+      EventsService.updateInvitationEvent(invitation.event.id, invitation.id, $event).then(
+          (response) => {
+            invitation.status.id = response.data.invitation.status.id;
+            socket.emit("change card", {
+              content: response.data.invitation.status,
+              to: invitation.id
+            });
+            invitation.canNotButtonLoading = false;
+          },
+          () => {
+            invitation.canNotButtonLoading = false;
+            alert('could not change status, try again');
+          }
+      );
+    },
+    handleUpdatingInvitationMostLikely($event, invitation) {
+      invitation.mostLikelyButtonLoading = true;
+      if(invitation.status === null) invitation.status = {};
+
+      console.log($event, invitation);
+      $event.statusId = +$event.mostLikelyStatusId;
+      EventsService.updateInvitationEvent(invitation.event.id, invitation.id, $event).then(
+          (response) => {
+            invitation.status.id = response.data.invitation.status.id;
+            socket.emit("change card", {
+              content: response.data.invitation.status,
+              to: invitation.id
+            });
+            invitation.mostLikelyButtonLoading = false;
+          },
+          () => {
+            invitation.mostLikelyButtonLoading = false;
+            alert('could not change status, try again');
+          }
+      );
+    },
+    handleUpdatingInvitationDefinitelyAttend($event, invitation) {
+      invitation.definitelyAttendButtonLoading = true;
+      if(invitation.status === null) invitation.status = {};
+
+      console.log($event, invitation);
+      $event.statusId = +$event.definitelyAttendStatusId;
+      EventsService.updateInvitationEvent(invitation.event.id, invitation.id, $event).then(
+          (response) => {
+            invitation.status.id = response.data.invitation.status.id;
+            socket.emit("change card", {
+              content: response.data.invitation.status,
+              to: invitation.id
+            });
+            invitation.definitelyAttendButtonLoading = false;
+          },
+          () => {
+            invitation.definitelyAttendButtonLoading = false;
+            alert('could not change status, try again');
+          }
+      );
+    }
+  },
+  destroyed() {
+    socket.disconnect();
   }
 };
 </script>

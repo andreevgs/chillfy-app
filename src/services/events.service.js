@@ -25,6 +25,16 @@ class EventsService {
         return api.post(`/events/${eventId}/invitations`, {invitation: {userId, eventId}});
     }
 
+    updateEvent(eventId, event) {
+        return api.patch(`/events/${eventId}`, {event});
+    }
+    updateInvitationEvent(eventId, invitationId, status){
+        return api.patch(`/events/${eventId}/invitations/${invitationId}`, {invitation: {statusId: status.statusId}})
+    }
+
+    deleteEvent(eventId) {
+        return api.delete(`/events/${eventId}`);
+    }
     deleteEventInvitation(eventId, invitationId){
         return api.delete(`/events/${eventId}/invitations/${invitationId}`);
     }

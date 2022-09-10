@@ -13,6 +13,9 @@ class AccountService {
     deleteContactRequest(requestId) {
         return api.delete('/account/contacts/requests/' + requestId);
     }
+    deleteFromContacts(requestId) {
+        return api.delete('/account/contacts/requests/active/' + requestId);
+    }
 }
 
 export default new AccountService();

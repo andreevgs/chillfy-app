@@ -6,7 +6,6 @@ import store from "./store"
 import "bootstrap"
 import "bootstrap/dist/css/bootstrap.min.css"
 import setInterceptors from "./services/setInterceptors"
-import './registerServiceWorker'
 
 setInterceptors(store)
 

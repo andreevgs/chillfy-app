@@ -207,10 +207,10 @@ export default {
       EventsService.updateInvitationEvent(invitation.event.id, invitation.id, $event).then(
           (response) => {
             invitation.status.id = response.data.invitation.status.id;
-            socket.emit("change card", {
-              content: response.data.invitation.status,
-              to: invitation.id
-            });
+            // socket.emit("change card", {
+            //   content: response.data.invitation.status,
+            //   to: invitation.id
+            // });
             invitation.canNotButtonLoading = false;
           },
           () => {

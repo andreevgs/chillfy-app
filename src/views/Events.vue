@@ -202,7 +202,7 @@ export default {
       invitation.canNotButtonLoading = true;
       if(invitation.status === null) invitation.status = {};
 
-      console.log($event, invitation);
+      console.log($event, invitation.event.id, invitation.id, invitation.status.id);
       $event.statusId = +$event.canNotStatusId;
       EventsService.updateInvitationEvent(invitation.event.id, invitation.id, $event).then(
           (response) => {

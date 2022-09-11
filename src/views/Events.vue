@@ -15,7 +15,7 @@
               <ErrorMessage name="description" class="error-feedback" />
             </div>
             <div class="form-group">
-              <label for="date">description</label>
+              <label for="date">date and time</label>
               <Field name="date" type="datetime-local" class="form-control" />
               <ErrorMessage name="date" class="error-feedback" />
             </div>
@@ -181,8 +181,10 @@ export default {
     },
     handleCreation(event) {
       this.loading = true;
+      event.date = new Date(event.date).toISOString();
       EventsService.createEvent(event).then(
           response => {
+            console.log(event.date, new Date(event.date).toString())
             this.events.push(response.data.event);
             this.isCreationOfEventActive = false;
             this.loading = false;
